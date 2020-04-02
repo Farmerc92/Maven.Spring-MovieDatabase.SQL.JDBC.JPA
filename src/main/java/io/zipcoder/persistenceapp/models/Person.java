@@ -5,8 +5,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 public class Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Integer id;
     private String first_name;
     private String last_name;

@@ -4,9 +4,10 @@ import io.zipcoder.persistenceapp.jdbc.PersonMapper;
 import io.zipcoder.persistenceapp.models.Person;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Service
 public class PersonService {
 
     DriverManagerDataSource dataSource = new DriverManagerDataSource("jdbc:h2:mem:testdb", "sa","");
@@ -26,10 +27,11 @@ public class PersonService {
         return jdbcTemplate.query("SELECT * FROM PERSON", new PersonMapper());
     }
 
-    public void updatePerson(Integer id, Person person){
+    public Person updatePerson(Person person){
         jdbcTemplate.execute("UPDATE PERSON SET first_name = '" + person.getFirst_name() + "', last_name = '" + person.getLast_name()
          + "', mobile = '" + person.getMobile() + "', birthday = '" + person.getBirthday() + "', home_id = " + person.getHome_id()
-         + "WHERE id = " + id);
+         + "WHERE id = " + person.getId());
+        return findById(person.getId());
     }
 
     public boolean deletePerson(Integer id){
@@ -79,6 +81,10 @@ public class PersonService {
         Map<String, Integer> map = new HashMap<>();
         findAll().forEach(person -> map.compute(person.getFirst_name(), (name, count) -> (name == null) ? 1 : count++));
         return map;
+    }
+
+    public List<Person> findAllByMobile(String mobile){
+        return jdbcTemplate.query("SELECT * FROM PERSON WHERE mobile = " + mobile, new PersonMapper());
     }
 
 }
